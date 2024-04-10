@@ -9,21 +9,12 @@ import SwiftUI
 
 struct FrameworkDetailView: View {
     let framework: Framework
+    @Binding var isShowingDetailView: Bool
+    @State var isShowingSafariView = false
+    
     var body: some View {
         VStack {
-            HStack {
-                Spacer()
-                
-                Button {
-                    print("Dismiss")
-                } label: {
-                    Image(systemName: "xmark")
-                        .imageScale(.large)
-                        .frame(width: 44, height: 44)
-                        .foregroundColor(Color(.label))
-                }
-            }
-            .padding()
+            CloseButtonView(isShowingDetailView: $isShowingDetailView)
             
             Spacer()
             
@@ -36,16 +27,19 @@ struct FrameworkDetailView: View {
             Spacer()
             
             Button {
-                print("Learn more")
+                isShowingSafariView = true
             } label: {
                 MoreButtonView(title: framework.name)
             }
             
             Spacer()
         }
+        .fullScreenCover(isPresented: $isShowingSafariView, content: {
+            SafariView(url: URL(string: framework.urlString)!)
+        })
     }
 }
 
 #Preview {
-    FrameworkDetailView(framework: MockData.sampleFramework)
+    FrameworkDetailView(framework: MockData.sampleFramework, isShowingDetailView: .constant(false))
 }
